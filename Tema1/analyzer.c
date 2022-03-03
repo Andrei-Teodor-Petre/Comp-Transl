@@ -158,7 +158,7 @@ int main()
 	long size = fsize(text);
 	char* fcontent = malloc(size);
 	fread(fcontent, 1, size, text);
-	
+
 	parse(fcontent); // calling the parse function
 
 	return (0);
