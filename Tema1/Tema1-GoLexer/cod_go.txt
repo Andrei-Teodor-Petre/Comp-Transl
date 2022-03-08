@@ -1,0 +1,16 @@
+func main() {
+	file, err := os.Open("cod_go.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	lexer := NewLexer(file)
+	for {
+		pos, tok, lit := lexer.Lex()
+		if tok == EOF {
+			break
+		}
+
+		fmt.Printf("%d:%d\t%d\t%s\t%s\n", pos.line, pos.column,len([]rune(lit)), tok, lit)
+	}
+}
