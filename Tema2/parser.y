@@ -1,6 +1,7 @@
 %{
 //definitions
 int yylex();
+void yyerror(const char *s);
 %}
 
 
@@ -32,10 +33,4 @@ int main(){
 
 	return 0;
 
-}
-
-yyerror(char * err)
-{
-	printf("ERROR %s", err);
-	return 0;
 }

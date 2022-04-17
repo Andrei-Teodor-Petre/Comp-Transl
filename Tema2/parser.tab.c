@@ -71,8 +71,9 @@
 
 //definitions
 int yylex();
+void yyerror(const char *s);
 
-#line 76 "parser.tab.c"
+#line 77 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -495,7 +496,7 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    19,    19,    20,    23,    24
+       0,    20,    20,    21,    24,    25
 };
 #endif
 
@@ -1052,25 +1053,25 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* input: exp EOL  */
-#line 19 "parser.y"
+#line 20 "parser.y"
                { printf("%d\n", (yyvsp[-1].num)); }
-#line 1058 "parser.tab.c"
+#line 1059 "parser.tab.c"
     break;
 
   case 4: /* exp: NUMBER  */
-#line 23 "parser.y"
+#line 24 "parser.y"
             {(yyval.num) = (yyvsp[0].num); }
-#line 1064 "parser.tab.c"
+#line 1065 "parser.tab.c"
     break;
 
   case 5: /* exp: exp PLUS exp  */
-#line 24 "parser.y"
+#line 25 "parser.y"
                {(yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num);}
-#line 1070 "parser.tab.c"
+#line 1071 "parser.tab.c"
     break;
 
 
-#line 1074 "parser.tab.c"
+#line 1075 "parser.tab.c"
 
       default: break;
     }
@@ -1263,7 +1264,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 27 "parser.y"
+#line 28 "parser.y"
 
 
 
@@ -1272,10 +1273,4 @@ int main(){
 
 	return 0;
 
-}
-
-yyerror(char * err)
-{
-	printf("ERROR %s", err);
-	return 0;
 }
