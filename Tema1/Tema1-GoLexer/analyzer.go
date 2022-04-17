@@ -9,15 +9,13 @@ import (
 	"unicode"
 )
 
-type Token int
-
-var Operators = []string{"+", "-", "!", "&", "*", "", "^", "<", ">", "=", "&", "|", ":", "."}
+var Operators = []string{"+", "-", "!", "&", "*", "", "^", "<", ">", "=", "&", "|", ":", ".", "/", "%"}
 var Keywords = []string{"break", "case", "chan", "const", "continue", "default", "defer", "else", "fallthrough",
 	"for", "func", "go", "goto", "if", "import", "interface", "map", "package", "range",
 	"return", "select", "struct", "switch", "type", "var"}
 var Delimiters = []string{"(", ")", "[", "]", "{", "}", ","}
 
-//var DataTypes = []string{"int", "uint", "bool", "byte", "rune", "float", "complex", "string"} // may not need theese -> they are identifiers
+type Token int
 
 const (
 	EOF = iota
@@ -44,7 +42,7 @@ var tokens = []string{
 	INT:          "INT",
 	SEMI:         ";",
 	COMMENT:      "COMMENT",
-	BLOCKCOMMENT: "BLOCKCOMMENT",
+	BLOCKCOMMENT: "BLOCK COMMENT",
 	KEYWORD:      "KEYWORD",
 
 	OPERATOR:  "OPERATOR",
@@ -73,7 +71,7 @@ func DelimitersContains(delimiter rune) bool {
 
 func KeywordsContains(keyword string) bool {
 	for _, item := range Keywords {
-		if item == string(keyword) {
+		if item == keyword {
 			return true
 		}
 	}
@@ -111,13 +109,10 @@ func (l *Lexer) Lex() (Position, Token, string) {
 			if err == io.EOF {
 				return l.pos, EOF, ""
 			}
-
-			// at this point there isn't much we can do, and the compiler
-			// should just return the raw error to the user
+			//just return the raw error to the user
 			panic(err)
 		}
 
-		// update the column to the position of the newly read in rune
 		l.pos.column++
 
 		if OperatorsContains(r) {
@@ -166,7 +161,7 @@ func (l *Lexer) Lex() (Position, Token, string) {
 				l.backup()
 				lit := l.lexInt()
 				return startPos, INT, lit
-			} else if unicode.IsLetter(r) {
+			} else if unicode.IsLetter(r) { //IDENTIFIERS
 				// backup and let lexIdent rescan the beginning of the ident
 				startPos := l.pos
 				l.backup()
@@ -229,7 +224,7 @@ func (l *Lexer) lexIdent() (Token, string) {
 		}
 
 		l.pos.column++
-		if unicode.IsLetter(r) {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_'{
 			lit = lit + string(r)
 		} else {
 			// scanned something not in the identifier
@@ -309,7 +304,7 @@ func (l *Lexer) lexString() (string, error) {
 	//add the opening "
 	r, _, err := l.reader.ReadRune()
 	if err != nil {
-		if err == io.EOF && openString {
+		if err == io.EOF {
 			// at the end of the identifier
 			return "", errors.New("Unclosed string")
 		}
@@ -332,11 +327,10 @@ func (l *Lexer) lexString() (string, error) {
 			//check for escapes
 
 			finalRune := lit[len(lit)-1:]
-			if finalRune == "\\"{
+			if finalRune == "\\" {
 				lit = lit + string(r)
 				continue
 			}
-
 
 			openString = false
 			lit = lit + string(r) //close the string and return it
@@ -355,7 +349,7 @@ func (l *Lexer) lexRune() (string, error) {
 	//add the opening '
 	r, _, err := l.reader.ReadRune()
 	if err != nil {
-		if err == io.EOF && openString {
+		if err == io.EOF {
 			// at the end of the identifier
 			return "", errors.New("Unclosed rune")
 		}
@@ -458,6 +452,6 @@ func main() {
 			break
 		}
 
-		fmt.Printf("%d:%d\t%d\t%s\t%s\n", pos.line, pos.column,len([]rune(lit)), tok, lit)
+		fmt.Printf("%d:%d\t%d\t%s\t%s\n", pos.line, pos.column, len([]rune(lit)), tok, lit)
 	}
 }

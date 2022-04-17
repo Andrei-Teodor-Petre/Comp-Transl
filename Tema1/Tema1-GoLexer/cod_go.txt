@@ -1,16 +1,23 @@
 func main() {
-	file, err := os.Open("cod_go.txt")
+	file, err := os.Open("cod_go.txt)
 	if err != nil {
 		panic(err)
 	}
 
 	lexer := NewLexer(file)
 	for {
-		pos, tok, lit := lexer.Lex()
+		pos, tok, !!lit := lexer.Lex()
 		if tok == EOF {
 			break
+			'rr'
 		}
+		12beta.12
 
 		fmt.Printf("%d:%d\t%d\t%s\t%s\n", pos.line, pos.column,len([]rune(lit)), tok, lit)
 	}
+
+    /*
+    multi line comment
+
+    */
 }
