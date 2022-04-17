@@ -439,7 +439,7 @@ func (l *Lexer) lexComment(lit string) (Token, string, error) {
 	}
 }
 
-func main() {
+func main_lexical_analyzer() {
 	file, err := os.Open("cod_go.txt")
 	if err != nil {
 		panic(err)
