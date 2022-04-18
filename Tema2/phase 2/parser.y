@@ -18,32 +18,32 @@
 
 %union {char *data; int indent_depth;};
 
-%token T_identifier T_False T_True T_number Indent Nodent Dedent T_string T_print T_colon T_newLine T_lesserThan T_greaterThanEqualTo T_lesserThanEqualTo T_or T_and T_not T_assignOP T_notEqualOP T_equalOP T_greaterThan T_in T_if T_elif T_while T_else T_import T_break T_pass T_minus T_plus T_division T_multiply T_openParanthesis T_closeParanthesis T_EOF T_return T_openBracket T_closeBracket T_def T_comma T_List T_range T_None T_continue
+%token TOKEN_identifier TOKEN_False TOKEN_True TOKEN_number Indent Nodent Dedent TOKEN_string TOKEN_print TOKEN_colon TOKEN_newLine TOKEN_lesserThan TOKEN_greaterThanEqualTo TOKEN_lesserThanEqualTo TOKEN_or TOKEN_and TOKEN_not TOKEN_assignOP TOKEN_notEqualOP TOKEN_equalOP TOKEN_greaterThan TOKEN_in TOKEN_if TOKEN_elif TOKEN_while TOKEN_else TOKEN_import TOKEN_break TOKEN_pass TOKEN_minus TOKEN_plus TOKEN_division TOKEN_multiply TOKEN_openParanthesis TOKEN_closeParanthesis TOKEN_EOF TOKEN_return TOKEN_openBracket TOKEN_closeBracket TOKEN_def TOKEN_comma TOKEN_List TOKEN_range TOKEN_None TOKEN_continue
 
-%left T_plus T_minus
-%left T_multiply T_division
-%right T_assignOP
-%nonassoc T_if
-%nonassoc T_elif
-%nonassoc T_else
+%left TOKEN_plus TOKEN_minus
+%left TOKEN_multiply TOKEN_division
+%right TOKEN_assignOP
+%nonassoc TOKEN_if
+%nonassoc TOKEN_elif
+%nonassoc TOKEN_else
 %start Start
 
 %%
 
-Start : StartParse T_EOF {finish();};
+Start : StartParse TOKEN_EOF {finish();};
 
-constant : T_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));}
-         | T_string {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));}
-		 | T_None {appned_token("Constant", "None", @1.first_line, strlen($<data>1));};
+constant : TOKEN_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));}
+         | TOKEN_string {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));}
+		 | TOKEN_None {appned_token("Constant", "None", @1.first_line, strlen($<data>1));};
 
-term : T_identifier {check_scope($<data>1, @1.first_line); appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));}
+term : TOKEN_identifier {check_scope($<data>1, @1.first_line); appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));}
      | constant
      | list_index;
 
 
-list_index : T_identifier T_openBracket constant T_closeBracket {check_scope($<data>1, @1.first_line); is_iter($<data>1, @1.first_line);};
+list_index : TOKEN_identifier TOKEN_openBracket constant TOKEN_closeBracket {check_scope($<data>1, @1.first_line); is_iter($<data>1, @1.first_line);};
 
-StartParse : T_newLine StartParse | finalStatements T_newLine {reset_depth();} StartParse | ;
+StartParse : TOKEN_newLine StartParse | finalStatements TOKEN_newLine {reset_depth();} StartParse | ;
 
 basic_stmt : pass_stmt
            | break_stmt
@@ -56,78 +56,78 @@ basic_stmt : pass_stmt
            | return_stmt;
 
 arith_exp : term
-          | arith_exp  T_plus  arith_exp
-          | arith_exp  T_minus  arith_exp
-          | arith_exp  T_multiply  arith_exp
-          | arith_exp  T_division  arith_exp
-          | T_minus arith_exp
-          | T_openParanthesis arith_exp T_closeParanthesis;
+          | arith_exp  TOKEN_plus  arith_exp
+          | arith_exp  TOKEN_minus  arith_exp
+          | arith_exp  TOKEN_multiply  arith_exp
+          | arith_exp  TOKEN_division  arith_exp
+          | TOKEN_minus arith_exp
+          | TOKEN_openParanthesis arith_exp TOKEN_closeParanthesis;
 
 
-bool_exp : bool_term T_or bool_term
-         | arith_exp T_lesserThan arith_exp
-         | bool_term T_and bool_term
-         | arith_exp T_greaterThan arith_exp
-         | arith_exp T_lesserThanEqualTo arith_exp
-         | arith_exp T_greaterThanEqualTo arith_exp
-         | arith_exp T_in T_identifier
+bool_exp : bool_term TOKEN_or bool_term
+         | arith_exp TOKEN_lesserThan arith_exp
+         | bool_term TOKEN_and bool_term
+         | arith_exp TOKEN_greaterThan arith_exp
+         | arith_exp TOKEN_lesserThanEqualTo arith_exp
+         | arith_exp TOKEN_greaterThanEqualTo arith_exp
+         | arith_exp TOKEN_in TOKEN_identifier
          | bool_term ;
 
 bool_term : bool_factor
-          | arith_exp T_equalOP arith_exp
-          | T_True {appned_token("Constant", "True", @1.first_line, strlen($<data>1));}
-          | T_False {appned_token("Constant", "False", @1.first_line, strlen($<data>1));};
+          | arith_exp TOKEN_equalOP arith_exp
+          | TOKEN_True {appned_token("Constant", "True", @1.first_line, strlen($<data>1));}
+          | TOKEN_False {appned_token("Constant", "False", @1.first_line, strlen($<data>1));};
 
-bool_factor : T_not bool_factor
-            | T_openParanthesis bool_exp T_closeParanthesis;
+bool_factor : TOKEN_not bool_factor
+            | TOKEN_openParanthesis bool_exp TOKEN_closeParanthesis;
 
-import_stmt : T_import T_identifier {appned_token("Package name", $<data>2, @2.first_line, strlen($<data>2));};
-pass_stmt : T_pass
-continue_stmt : T_continue
-break_stmt : T_break
-return_stmt : T_return
+import_stmt : TOKEN_import TOKEN_identifier {appned_token("Package name", $<data>2, @2.first_line, strlen($<data>2));};
+pass_stmt : TOKEN_pass
+continue_stmt : TOKEN_continue
+break_stmt : TOKEN_break
+return_stmt : TOKEN_return
 
-assign_stmt : T_identifier T_assignOP arith_exp {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));}
-            | T_identifier T_assignOP bool_exp {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));}
-            | T_identifier  T_assignOP func_call {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));}
-            | T_identifier T_assignOP T_openBracket list_elements T_closeBracket {appned_token("List identifier", $<data>1, @1.first_line, strlen($<data>1));}
-			| T_identifier T_assignOP T_range {appned_token("List identifier", $<data>1, @1.first_line, strlen($<data>1));} T_openParanthesis range_args T_closeParanthesis ;
+assign_stmt : TOKEN_identifier TOKEN_assignOP arith_exp {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));}
+            | TOKEN_identifier TOKEN_assignOP bool_exp {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));}
+            | TOKEN_identifier  TOKEN_assignOP func_call {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));}
+            | TOKEN_identifier TOKEN_assignOP TOKEN_openBracket list_elements TOKEN_closeBracket {appned_token("List identifier", $<data>1, @1.first_line, strlen($<data>1));}
+			| TOKEN_identifier TOKEN_assignOP TOKEN_range {appned_token("List identifier", $<data>1, @1.first_line, strlen($<data>1));} TOKEN_openParanthesis range_args TOKEN_closeParanthesis ;
 
-print_stmt : T_print T_openParanthesis term T_closeParanthesis
+print_stmt : TOKEN_print TOKEN_openParanthesis term TOKEN_closeParanthesis
 
 finalStatements : basic_stmt
                 | cmpd_stmt
                 | func_def
                 | func_call
-                | error T_newLine {yyerrok; yyclearin;};
+                | error TOKEN_newLine {yyerrok; yyclearin;};
 
 cmpd_stmt : if_stmt
           | while_stmt;
 
 
-if_stmt : T_if bool_exp T_colon start_suite 		%prec T_if
-        | T_if bool_exp T_colon start_suite elif_stmts;
+if_stmt : TOKEN_if bool_exp TOKEN_colon start_suite 		%prec TOKEN_if
+        | TOKEN_if bool_exp TOKEN_colon start_suite elif_stmts;
 
 elif_stmts : else_stmt
-           | T_elif bool_exp T_colon start_suite elif_stmts;
+           | TOKEN_elif bool_exp TOKEN_colon start_suite elif_stmts;
 
-else_stmt : T_else T_colon start_suite;
+else_stmt : TOKEN_else TOKEN_colon start_suite;
 
-func_def : T_def T_identifier {appned_token("Func_Name", $<data>2, @2.first_line, strlen($<data>2));} T_openParanthesis{flag = 1; func_no++;} param T_closeParanthesis T_colon start_suite
+func_def : TOKEN_def TOKEN_identifier {appned_token("Func_Name", $<data>2, @2.first_line, strlen($<data>2));} TOKEN_openParanthesis{flag = 1; func_no++;} param TOKEN_closeParanthesis TOKEN_colon start_suite
 
-func_call : T_identifier {appned_token("Func_Name", $<data>1, @1.first_line, strlen($<data>1));} T_openParanthesis list_elements T_closeParanthesis
+func_call : TOKEN_identifier {appned_token("Func_Name", $<data>1, @1.first_line, strlen($<data>1));} TOKEN_openParanthesis list_elements TOKEN_closeParanthesis
 
-range_args : T_number T_comma T_number T_comma T_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1)); appned_token("Constant", $<data>3, @3.first_line, strlen($<data>3)); appned_token("Constant", $<data>5, @5.first_line, strlen($<data>5));}
-		   | T_number T_comma T_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1)); appned_token("Constant", $<data>3, @3.first_line, strlen($<data>3));}
-		   | T_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));};
+range_args : TOKEN_number TOKEN_comma TOKEN_number TOKEN_comma TOKEN_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1)); appned_token("Constant", $<data>3, @3.first_line, strlen($<data>3)); appned_token("Constant", $<data>5, @5.first_line, strlen($<data>5));}
+		   | TOKEN_number TOKEN_comma TOKEN_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1)); appned_token("Constant", $<data>3, @3.first_line, strlen($<data>3));}
+		   | TOKEN_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));};
 
-while_stmt : T_while bool_exp T_colon start_suite;
+while_stmt : TOKEN_while bool_exp TOKEN_colon start_suite;
 
 start_suite : basic_stmt
-            | T_newLine Indent finalStatements suite;
+            | TOKEN_newLine Indent finalStatements suite;
 
-suite : T_newLine Nodent finalStatements suite
-      | T_newLine end_suite;
+suite : TOKEN_newLine Nodent finalStatements suite
+      | TOKEN_newLine end_suite;
       | {reset_depth();} elif_stmts;
 
 end_suite : Dedent finalStatements
@@ -135,13 +135,13 @@ end_suite : Dedent finalStatements
           | {flag = 0; cur_scope = 0;reset_depth();} finalStatements
           | {reset_depth();};
 
-param : T_identifier {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));} params | ;
+param : TOKEN_identifier {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));} params | ;
 
-params : T_comma T_identifier {appned_token("Identifier", $<data>2, @1.first_line, strlen($<data>2));} params | ;
+params : TOKEN_comma TOKEN_identifier {appned_token("Identifier", $<data>2, @1.first_line, strlen($<data>2));} params | ;
 
-list_element : T_comma term list_element | ;
+list_element : TOKEN_comma term list_element | ;
 
-list_elements : T_identifier {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));} list_element | T_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));} list_element | T_string {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));} list_element |
+list_elements : TOKEN_identifier {appned_token("Identifier", $<data>1, @1.first_line, strlen($<data>1));} list_element | TOKEN_number {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));} list_element | TOKEN_string {appned_token("Constant", $<data>1, @1.first_line, strlen($<data>1));} list_element |
 
 
 %%

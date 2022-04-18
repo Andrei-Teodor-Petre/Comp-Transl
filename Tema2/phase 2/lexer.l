@@ -72,7 +72,7 @@ double_quote_string \"([^\"\n])*\"
 {multiline_comment_single} {}
 {multiline_comment_double} {}
 [ ] {}
-"\n"  {yycolumn=1; print_token("NL"); return T_newLine;}
+"\n"  {yycolumn=1; print_token("NL"); return TOKEN_newLine;}
 
 [\t]* {
         indent_depth = strlen(yytext) + 1;
@@ -84,50 +84,50 @@ double_quote_string \"([^\"\n])*\"
       }
 
 
-<<EOF>> {print_token("EOF"); return T_EOF;}
-"True" {print_token("True"); return T_True;}
-"False" {print_token("False"); return T_False;}
-"if" {print_token("if"); return T_if;}
-"in" {print_token("in"); return T_in;}
-"while" {print_token("while"); return T_while;}
-"continue" {print_token("continue"); return T_continue;}
-"break" {print_token("break"); return T_break;}
-"pass" {print_token("pass"); return T_pass;}
-"return" {print_token("return"); return T_return;}
-":" {print_token("colon"); return T_colon;}
-">" {print_token("greaterThan"); return T_greaterThan;}
-"<" {print_token("lesserThan"); return T_lesserThan;}
-">=" {print_token("greaterThanEqualTo"); return T_greaterThanEqualTo;}
-"<=" {print_token("lesserThanEqualTo"); return T_lesserThanEqualTo;}
-"==" {print_token("Equal Operator"); return T_equalOP;}
-"!=" {print_token("Not Equal Operator"); return T_notEqualOP;}
-"None" {print_token("None"); return T_None;}
-"and" {print_token("and"); return T_and;}
-"or" {print_token("or"); return T_or;}
-"not" {print_token("not"); return T_not;}
-"elif" {print_token("elif"); return T_elif;}
-"else" {print_token("else"); return T_else;}
-"def" {print_token("def"); return T_def;}
-"[" {print_token("openBracket"); return T_openBracket;}
-"]" {print_token("closeBracket"); return T_closeBracket;}
-"," {print_token("comma"); return T_comma;}
-"=" {print_token("assignOP"); return T_assignOP;}
-"+" {print_token("plus"); return T_plus;}
-"-" {print_token("minus"); return T_minus;}
-"*" {print_token("multiply"); return T_multiply;}
-"/" {print_token("division"); return T_division;}
-"(" { print_token("openParanthesis"); return T_openParanthesis;}
-")" {print_token("closeParanthesis"); return T_closeParanthesis;}
-"list" {print_token("list"); return T_List;}
-"range" {print_token("range"); return T_range;}
-"import" {print_token("import"); return T_import;}
-"print"  {print_token("print"); return T_print;}
+<<EOF>> {print_token("EOF"); return TOKEN_EOF;}
+"True" {print_token("True"); return TOKEN_True;}
+"False" {print_token("False"); return TOKEN_False;}
+"if" {print_token("if"); return TOKEN_if;}
+"in" {print_token("in"); return TOKEN_in;}
+"while" {print_token("while"); return TOKEN_while;}
+"continue" {print_token("continue"); return TOKEN_continue;}
+"break" {print_token("break"); return TOKEN_break;}
+"pass" {print_token("pass"); return TOKEN_pass;}
+"return" {print_token("return"); return TOKEN_return;}
+":" {print_token("colon"); return TOKEN_colon;}
+">" {print_token("greaterThan"); return TOKEN_greaterThan;}
+"<" {print_token("lesserThan"); return TOKEN_lesserThan;}
+">=" {print_token("greaterThanEqualTo"); return TOKEN_greaterThanEqualTo;}
+"<=" {print_token("lesserThanEqualTo"); return TOKEN_lesserThanEqualTo;}
+"==" {print_token("Equal Operator"); return TOKEN_equalOP;}
+"!=" {print_token("Not Equal Operator"); return TOKEN_notEqualOP;}
+"None" {print_token("None"); return TOKEN_None;}
+"and" {print_token("and"); return TOKEN_and;}
+"or" {print_token("or"); return TOKEN_or;}
+"not" {print_token("not"); return TOKEN_not;}
+"elif" {print_token("elif"); return TOKEN_elif;}
+"else" {print_token("else"); return TOKEN_else;}
+"def" {print_token("def"); return TOKEN_def;}
+"[" {print_token("openBracket"); return TOKEN_openBracket;}
+"]" {print_token("closeBracket"); return TOKEN_closeBracket;}
+"," {print_token("comma"); return TOKEN_comma;}
+"=" {print_token("assignOP"); return TOKEN_assignOP;}
+"+" {print_token("plus"); return TOKEN_plus;}
+"-" {print_token("minus"); return TOKEN_minus;}
+"*" {print_token("multiply"); return TOKEN_multiply;}
+"/" {print_token("division"); return TOKEN_division;}
+"(" { print_token("openParanthesis"); return TOKEN_openParanthesis;}
+")" {print_token("closeParanthesis"); return TOKEN_closeParanthesis;}
+"list" {print_token("list"); return TOKEN_List;}
+"range" {print_token("range"); return TOKEN_range;}
+"import" {print_token("import"); return TOKEN_import;}
+"print"  {print_token("print"); return TOKEN_print;}
 
 
-{single_quote_string} {yylval.data = strdup(yytext); print_token(yylval.data); return T_string;}
-{double_quote_string} {yylval.data = strdup(yytext); print_token(yylval.data); return T_string;}
-{number} {yylval.data = strdup(yytext); print_token(yylval.data); return T_number;}
-{id} {yylval.data = strdup(yytext); print_token(yylval.data); return T_identifier;}
+{single_quote_string} {yylval.data = strdup(yytext); print_token(yylval.data); return TOKEN_string;}
+{double_quote_string} {yylval.data = strdup(yytext); print_token(yylval.data); return TOKEN_string;}
+{number} {yylval.data = strdup(yytext); print_token(yylval.data); return TOKEN_number;}
+{id} {yylval.data = strdup(yytext); print_token(yylval.data); return TOKEN_identifier;}
 
 %%
 
