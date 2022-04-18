@@ -1,0 +1,12 @@
+15. Sa se studieze specificatia pentru generatorul de parser-e Bison. Sa se exemplifice pentru gramatica sintaxei unui limbaj/sublimbaj 
+(se vor considera minimdouă tipuri de variabile, minim 2 instrucțiuni, dintre care o instrucțiune if și una de ciclare) pentru Python
+
+
+Vlad Barbu14:35
+https://github.com/search?p=2&q=python+yacc&type=Repositories
+https://github.com/search?q=python+interpreter+bison&type=Repositories
+https://github.com/search?q=python+compiler+yacc&type=Repositories
+Vlad Barbu14:37
+https://github.com/Kadle11/Mini-Python-Compiler-in-Lex-and-Yacc
+Vlad Barbu14:52
+https://github.com/Siddharth-K-Rao/Compiler-Design-Mini-Project
